@@ -45,6 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
         Theme.of(context).platform == TargetPlatform.iOS;
   }
 
+  void runButtonMethod(Function(Uri) toRun, String url) {
+    setState(() {
+      _responseController.text = "";
+      _future = toRun(Uri.parse(url));
+      FocusScope.of(context).unfocus();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double buttonSize = isPhone() ? 64 : 48;
@@ -90,70 +98,40 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: buttonSize,
                       child: FittedBox(
                           child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _responseController.text = "";
-                            Uri uri = Uri.parse(_urlController.text);
-                            _future = http.post(uri);
-                            FocusScope.of(context).unfocus();
-                          });
-                        },
+                        onPressed: () => runButtonMethod(
+                            (p0) => http.post(p0), _urlController.text),
                         child: const Text("POST"),
                       ))),
                   SizedBox(
                       height: buttonSize,
                       child: FittedBox(
                           child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _responseController.text = "";
-                            Uri uri = Uri.parse(_urlController.text);
-                            _future = http.get(uri);
-                            FocusScope.of(context).unfocus();
-                          });
-                        },
+                        onPressed: () => runButtonMethod(
+                            (p0) => http.get(p0), _urlController.text),
                         child: const Text("GET"),
                       ))),
                   SizedBox(
                       height: buttonSize,
                       child: FittedBox(
                           child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _responseController.text = "";
-                            Uri uri = Uri.parse(_urlController.text);
-                            _future = http.put(uri);
-                            FocusScope.of(context).unfocus();
-                          });
-                        },
+                        onPressed: () => runButtonMethod(
+                            (p0) => http.put(p0), _urlController.text),
                         child: const Text("PUT"),
                       ))),
                   SizedBox(
                       height: buttonSize,
                       child: FittedBox(
                           child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _responseController.text = "";
-                            Uri uri = Uri.parse(_urlController.text);
-                            _future = http.patch(uri);
-                            FocusScope.of(context).unfocus();
-                          });
-                        },
+                        onPressed: () => runButtonMethod(
+                            (p0) => http.patch(p0), _urlController.text),
                         child: const Text("PATCH"),
                       ))),
                   SizedBox(
                       height: buttonSize,
                       child: FittedBox(
                           child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _responseController.text = "";
-                            Uri uri = Uri.parse(_urlController.text);
-                            _future = http.delete(uri);
-                            FocusScope.of(context).unfocus();
-                          });
-                        },
+                        onPressed: () => runButtonMethod(
+                            (p0) => http.delete(p0), _urlController.text),
                         child: const Text("DELETE"),
                       ))),
                 ],
