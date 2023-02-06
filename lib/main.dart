@@ -92,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: ElevatedButton(
                         onPressed: () {
                           setState(() {
+                            _responseController.text = "";
                             Uri uri = Uri.parse(_urlController.text);
                             _future = http.post(uri);
                           });
@@ -104,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: ElevatedButton(
                         onPressed: () {
                           setState(() {
+                            _responseController.text = "";
                             Uri uri = Uri.parse(_urlController.text);
                             _future = http.get(uri);
                           });
@@ -116,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: ElevatedButton(
                         onPressed: () {
                           setState(() {
+                            _responseController.text = "";
                             Uri uri = Uri.parse(_urlController.text);
                             _future = http.put(uri);
                           });
@@ -128,6 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: ElevatedButton(
                         onPressed: () {
                           setState(() {
+                            _responseController.text = "";
                             Uri uri = Uri.parse(_urlController.text);
                             _future = http.patch(uri);
                           });
@@ -140,6 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: ElevatedButton(
                         onPressed: () {
                           setState(() {
+                            _responseController.text = "";
                             Uri uri = Uri.parse(_urlController.text);
                             _future = http.delete(uri);
                           });
@@ -204,8 +209,8 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            _future = null;
             _responseController.text = "";
+            _future = null;
           });
         },
         tooltip: 'Clear',
