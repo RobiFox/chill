@@ -95,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             _responseController.text = "";
                             Uri uri = Uri.parse(_urlController.text);
                             _future = http.post(uri);
+                            FocusScope.of(context).unfocus();
                           });
                         },
                         child: const Text("POST"),
@@ -108,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             _responseController.text = "";
                             Uri uri = Uri.parse(_urlController.text);
                             _future = http.get(uri);
+                            FocusScope.of(context).unfocus();
                           });
                         },
                         child: const Text("GET"),
@@ -121,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             _responseController.text = "";
                             Uri uri = Uri.parse(_urlController.text);
                             _future = http.put(uri);
+                            FocusScope.of(context).unfocus();
                           });
                         },
                         child: const Text("PUT"),
@@ -134,6 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             _responseController.text = "";
                             Uri uri = Uri.parse(_urlController.text);
                             _future = http.patch(uri);
+                            FocusScope.of(context).unfocus();
                           });
                         },
                         child: const Text("PATCH"),
@@ -147,6 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             _responseController.text = "";
                             Uri uri = Uri.parse(_urlController.text);
                             _future = http.delete(uri);
+                            FocusScope.of(context).unfocus();
                           });
                         },
                         child: const Text("DELETE"),
