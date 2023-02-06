@@ -102,48 +102,48 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: buttonSize,
                       child: FittedBox(
                           child: ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                Uri uri = Uri.parse(_urlController.text);
-                                _future = http.get(uri);
-                              });
-                            },
+                        onPressed: () {
+                          setState(() {
+                            Uri uri = Uri.parse(_urlController.text);
+                            _future = http.get(uri);
+                          });
+                        },
                         child: const Text("GET"),
                       ))),
                   SizedBox(
                       height: buttonSize,
                       child: FittedBox(
                           child: ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                Uri uri = Uri.parse(_urlController.text);
-                                _future = http.put(uri);
-                              });
-                            },
+                        onPressed: () {
+                          setState(() {
+                            Uri uri = Uri.parse(_urlController.text);
+                            _future = http.put(uri);
+                          });
+                        },
                         child: const Text("PUT"),
                       ))),
                   SizedBox(
                       height: buttonSize,
                       child: FittedBox(
                           child: ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                Uri uri = Uri.parse(_urlController.text);
-                                _future = http.patch(uri);
-                              });
-                            },
+                        onPressed: () {
+                          setState(() {
+                            Uri uri = Uri.parse(_urlController.text);
+                            _future = http.patch(uri);
+                          });
+                        },
                         child: const Text("PATCH"),
                       ))),
                   SizedBox(
                       height: buttonSize,
                       child: FittedBox(
                           child: ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                Uri uri = Uri.parse(_urlController.text);
-                                _future = http.delete(uri);
-                              });
-                            },
+                        onPressed: () {
+                          setState(() {
+                            Uri uri = Uri.parse(_urlController.text);
+                            _future = http.delete(uri);
+                          });
+                        },
                         child: const Text("DELETE"),
                       ))),
                 ],
@@ -165,7 +165,11 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: SizedBox(
                                   width: 60,
                                   height: 60,
-                                  child: FittedBox(child: Icon(Icons.error_outline_rounded, color: Theme.of(context).primaryColor,))));
+                                  child: FittedBox(
+                                      child: Icon(
+                                    Icons.error_outline_rounded,
+                                    color: Theme.of(context).primaryColor,
+                                  ))));
                         } else if (snapshot.hasData) {
                           WidgetsBinding.instance
                               .addPostFrameCallback((timeStamp) {
