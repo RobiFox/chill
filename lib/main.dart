@@ -222,7 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 _future = null;
               });
             },
-            tooltip: 'Clear',
+            tooltip: 'Clear Log',
             child: const Icon(Icons.delete_forever),
           ),
           const SizedBox(height: 12,),
