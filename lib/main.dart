@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
         scaffoldBackgroundColor: const Color(0xFF202020),
+        iconTheme: IconThemeData(color: Colors.purple.shade200),
         textTheme: Theme.of(context)
             .textTheme
             .apply(bodyColor: Colors.white, displayColor: Colors.white),
@@ -35,6 +36,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final _urlController = TextEditingController();
   final _responseController = TextEditingController();
 
@@ -43,21 +46,30 @@ class _MyHomePageState extends State<MyHomePage> {
   String _displayContent = "";
   Map<String, String> header = {};
 
+  List<String> previousUrls = [];
+
   bool isPhone() {
     return Theme.of(context).platform == TargetPlatform.android ||
         Theme.of(context).platform == TargetPlatform.iOS;
   }
 
-  void runButtonMethod(Function(Uri, Map<String, String> header) toRun, String url) {
+  void runButtonMethod(
+      Function(Uri, Map<String, String> header) toRun, String url) {
     setState(() {
       _responseController.text = "";
-      _future = toRun(Uri.parse(url), header)..then((value) {
-        http.Response response = value as http.Response;
-        updateCookie(response);
-        setState(() {
-          _displayContent = "Status: ${response.statusCode} | Reason: ${response.reasonPhrase}";
+      _future = toRun(Uri.parse(url), header)
+        ..then((value) {
+          http.Response response = value as http.Response;
+          updateCookie(response);
+          setState(() {
+            if (!previousUrls.contains(_urlController.text))
+              previousUrls.insert(0, _urlController.text);
+            print(
+                "Added url ${_urlController.text}. Now at ${previousUrls.length}");
+            _displayContent =
+                "Status: ${response.statusCode} | Reason: ${response.reasonPhrase}";
+          });
         });
-      });
       FocusScope.of(context).unfocus();
     });
   }
@@ -80,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
       /*appBar: AppBar(
         title: Text(widget.title),
       ),*/
+      key: _scaffoldKey,
       body: Center(
         child: Column(
           children: [
@@ -89,20 +102,39 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _urlController,
-                keyboardType: TextInputType.url,
-                autocorrect: false,
-                decoration: InputDecoration(
-                    label: const Text("URL"),
-                    labelStyle: Theme.of(context).textTheme.labelMedium,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(128),
+              child: Stack(
+                children: [
+                  TextField(
+                    controller: _urlController,
+                    keyboardType: TextInputType.url,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                        label: const Text("URL"),
+                        labelStyle: Theme.of(context).textTheme.labelMedium,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(128),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(128),
+                            borderSide: const BorderSide(
+                                color: Colors.grey, width: 2))),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6.0, right: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              FocusScope.of(context).unfocus();
+                              _scaffoldKey.currentState!.openEndDrawer();
+                            },
+                            splashRadius: 12,
+                            icon: const Icon(Icons.history)),
+                      ],
                     ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(128),
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 2))),
+                  )
+                ],
               ),
             ),
             Padding(
@@ -117,7 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FittedBox(
                           child: ElevatedButton(
                         onPressed: () => runButtonMethod(
-                            (p0, h) => http.post(p0, headers: h), _urlController.text),
+                            (p0, h) => http.post(p0, headers: h),
+                            _urlController.text),
                         child: const Text("POST"),
                       ))),
                   SizedBox(
@@ -125,7 +158,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FittedBox(
                           child: ElevatedButton(
                         onPressed: () => runButtonMethod(
-                            (p0, h) => http.get(p0, headers: h), _urlController.text),
+                            (p0, h) => http.get(p0, headers: h),
+                            _urlController.text),
                         child: const Text("GET"),
                       ))),
                   SizedBox(
@@ -133,7 +167,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FittedBox(
                           child: ElevatedButton(
                         onPressed: () => runButtonMethod(
-                            (p0, h) => http.put(p0, headers: h), _urlController.text),
+                            (p0, h) => http.put(p0, headers: h),
+                            _urlController.text),
                         child: const Text("PUT"),
                       ))),
                   SizedBox(
@@ -141,7 +176,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FittedBox(
                           child: ElevatedButton(
                         onPressed: () => runButtonMethod(
-                            (p0, h) => http.patch(p0, headers: h), _urlController.text),
+                            (p0, h) => http.patch(p0, headers: h),
+                            _urlController.text),
                         child: const Text("PATCH"),
                       ))),
                   SizedBox(
@@ -149,7 +185,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FittedBox(
                           child: ElevatedButton(
                         onPressed: () => runButtonMethod(
-                            (p0, h) => http.delete(p0, headers: h), _urlController.text),
+                            (p0, h) => http.delete(p0, headers: h),
+                            _urlController.text),
                         child: const Text("DELETE"),
                       ))),
                 ],
@@ -160,7 +197,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 42.0),
-              child: Align(alignment: Alignment.bottomLeft, child: Text(_displayContent, style: Theme.of(context).textTheme.labelLarge),),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Text(_displayContent,
+                    style: Theme.of(context).textTheme.labelLarge),
+              ),
             ),
             Expanded(
                 child: Padding(
@@ -214,6 +255,79 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      endDrawer: Drawer(
+        backgroundColor: Colors.black45,
+        child: Column(
+          children: [
+            SafeArea(
+                child: SizedBox(
+              height: 92,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(32),
+                        bottomRight: Radius.circular(32))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.arrow_back)),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            previousUrls.clear();
+                          });
+                        },
+                        icon: const Icon(Icons.playlist_remove)),
+                  ],
+                ),
+              ),
+            )),
+            Expanded(
+              child: previousUrls.isEmpty
+                  ? Center(
+                      child: Text(
+                      "(Empty)",
+                      style: Theme.of(context).textTheme.labelSmall,
+                      textAlign: TextAlign.center,
+                    ))
+                  : ListView.builder(
+                      itemCount: previousUrls.length,
+                      itemBuilder: (context, i) {
+                        return ListTile(
+                          title: Text(previousUrls[i]),
+                          tileColor: Colors.black54,
+                          trailing: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                previousUrls.removeAt(i);
+                              });
+                            },
+                            icon: const Icon(Icons.remove, color: Colors.white),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              Navigator.of(context).pop();
+                              _urlController.text = previousUrls[i];
+                            });
+                          },
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
+      endDrawerEnableOpenDragGesture: true,
+      drawerEdgeDragWidth: MediaQuery
+          .of(context)
+          .size
+          .width,
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -228,7 +342,9 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: 'Clear Log',
             child: const Icon(Icons.delete_forever),
           ),
-          const SizedBox(height: 12,),
+          const SizedBox(
+            height: 12,
+          ),
           FloatingActionButton(
             onPressed: () {
               setState(() {
