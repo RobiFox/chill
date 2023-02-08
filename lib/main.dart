@@ -224,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     Icons.error_outline_rounded,
                                     color: Theme.of(context).primaryColor,
                                   ))));
-                        } else if (snapshot.hasData) {
+                        } else if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
                           WidgetsBinding.instance
                               .addPostFrameCallback((timeStamp) {
                             _responseController.text = snapshot.data!.body;
