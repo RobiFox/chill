@@ -40,17 +40,32 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<Response>? _future;
 
+  Map<String, String> header = {};
+
   bool isPhone() {
     return Theme.of(context).platform == TargetPlatform.android ||
         Theme.of(context).platform == TargetPlatform.iOS;
   }
 
-  void runButtonMethod(Function(Uri) toRun, String url) {
+  void runButtonMethod(Function(Uri, Map<String, String> header) toRun, String url) {
     setState(() {
       _responseController.text = "";
-      _future = toRun(Uri.parse(url));
+      _future = toRun(Uri.parse(url), header)..then((value) {
+        http.Response response = value as http.Response;
+        updateCookie(response);
+      });
       FocusScope.of(context).unfocus();
     });
+  }
+
+  void updateCookie(http.Response response) {
+    String? rawCookie = response.headers["set-cookie"];
+    if (rawCookie != null) {
+      print("Received Raw Cookie");
+      print(rawCookie);
+      List<String> split = rawCookie.split(";");
+      header["cookie"] = split[0];
+    }
   }
 
   @override
@@ -99,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FittedBox(
                           child: ElevatedButton(
                         onPressed: () => runButtonMethod(
-                            (p0) => http.post(p0), _urlController.text),
+                            (p0, h) => http.post(p0, headers: h), _urlController.text),
                         child: const Text("POST"),
                       ))),
                   SizedBox(
@@ -107,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FittedBox(
                           child: ElevatedButton(
                         onPressed: () => runButtonMethod(
-                            (p0) => http.get(p0), _urlController.text),
+                            (p0, h) => http.get(p0, headers: h), _urlController.text),
                         child: const Text("GET"),
                       ))),
                   SizedBox(
@@ -115,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FittedBox(
                           child: ElevatedButton(
                         onPressed: () => runButtonMethod(
-                            (p0) => http.put(p0), _urlController.text),
+                            (p0, h) => http.put(p0, headers: h), _urlController.text),
                         child: const Text("PUT"),
                       ))),
                   SizedBox(
@@ -123,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FittedBox(
                           child: ElevatedButton(
                         onPressed: () => runButtonMethod(
-                            (p0) => http.patch(p0), _urlController.text),
+                            (p0, h) => http.patch(p0, headers: h), _urlController.text),
                         child: const Text("PATCH"),
                       ))),
                   SizedBox(
@@ -131,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: FittedBox(
                           child: ElevatedButton(
                         onPressed: () => runButtonMethod(
-                            (p0) => http.delete(p0), _urlController.text),
+                            (p0, h) => http.delete(p0, headers: h), _urlController.text),
                         child: const Text("DELETE"),
                       ))),
                 ],
@@ -189,15 +204,30 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _responseController.text = "";
-            _future = null;
-          });
-        },
-        tooltip: 'Clear',
-        child: const Icon(Icons.delete_forever),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                _responseController.text = "";
+                _future = null;
+              });
+            },
+            tooltip: 'Clear',
+            child: const Icon(Icons.delete_forever),
+          ),
+          const SizedBox(height: 12,),
+          FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                header = {};
+              });
+            },
+            tooltip: 'Clear Header',
+            child: const Icon(Icons.cookie),
+          ),
+        ],
       ),
     );
   }
