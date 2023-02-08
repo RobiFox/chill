@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             if (isPhone())
-             const SizedBox(
+              const SizedBox(
                 height: 32,
               ),
             Padding(
@@ -154,6 +154,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       ))),
                 ],
               ),
+            ),
+            const SizedBox(
+              height: 8,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 42.0),
