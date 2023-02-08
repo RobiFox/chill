@@ -40,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<Response>? _future;
 
+  String _displayContent = "";
   Map<String, String> header = {};
 
   bool isPhone() {
@@ -53,6 +54,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _future = toRun(Uri.parse(url), header)..then((value) {
         http.Response response = value as http.Response;
         updateCookie(response);
+        setState(() {
+          _displayContent = "Status: ${response.statusCode} | Reason: ${response.reasonPhrase}";
+        });
       });
       FocusScope.of(context).unfocus();
     });
@@ -71,7 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     double buttonSize = isPhone() ? 64 : 48;
-    String displayContent;
 
     return Scaffold(
       /*appBar: AppBar(
@@ -152,9 +155,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 42.0),
+              child: Align(alignment: Alignment.bottomLeft, child: Text(_displayContent, style: Theme.of(context).textTheme.labelLarge),),
+            ),
             Expanded(
                 child: Padding(
-              padding: const EdgeInsets.all(32.0),
+              padding: const EdgeInsets.fromLTRB(32.0, 4.0, 32.0, 32.0),
               child: Stack(
                 children: [
                   if (_future != null)
@@ -211,6 +218,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               setState(() {
                 _responseController.text = "";
+                //_displayContent = "";
                 _future = null;
               });
             },
