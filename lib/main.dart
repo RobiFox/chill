@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             if (isPhone())
-              SizedBox(
+             const SizedBox(
                 height: 32,
               ),
             Padding(
