@@ -336,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               setState(() {
                 _responseController.text = "";
-                //_displayContent = "";
+                _displayContent = "";
                 _future = null;
               });
             },
