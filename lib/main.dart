@@ -303,6 +303,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           title: Text(previousUrls[i]),
                           tileColor: Colors.black54,
                           trailing: IconButton(
+                            splashRadius: 12,
                             onPressed: () {
                               setState(() {
                                 previousUrls.removeAt(i);
